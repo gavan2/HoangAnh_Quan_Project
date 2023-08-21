@@ -1,0 +1,56 @@
+﻿@page
+@model BookStory.Pages.Users.LoginModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_UserLayoutV2";
+}
+<div class="login-box">
+    <div class="login-logo">
+        <a href="/Index"><b>Book</b>Story</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        <div class="card-body login-card-body">
+            <p class="login-box-msg">Đăng nhập hệ thống</p>
+
+            <form method="post">
+                <div class="input-group mb-3">
+                    <input asp-for="@Model.user.Email" type="text" class="form-control" placeholder="Email" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" asp-for="@Model.user.Password" class="form-control" placeholder="Mật khẩu" required>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">Đăng nhập</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            <div class="social-auth-links text-center mb-3">
+                <p>@Model.message</p>
+            </div>
+            <!-- /.social-auth-links -->
+
+            <p class="mb-1">
+                <a href="/Users/ForgotPassword">Quên mật khẩu?</a>
+            </p>
+            <p class="mb-0">
+                <a href="/Users/Register/" class="text-center">Đăng ký tài khoản mới</a>
+            </p>
+        </div>
+        <!-- /.login-card-body -->
+    </div>
+</div>

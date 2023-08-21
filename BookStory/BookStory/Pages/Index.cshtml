@@ -1,0 +1,206 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    Layout = "_StoryLayout";
+}
+
+@using BookStory.Models
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+
+<div class="container" id="intro-index">
+    <div class="title-list">
+        <a href="/Book/Search?handler=Search&id=Hot" title="Truyện hot">
+            <span class="glyphicon glyphicon-fire"></span>
+        </a>
+        <h2><a href="/Book/Search?handler=Search&id=Hot" title="Truyện hot">Truyện hot</a></h2>
+        <h2><a href="/Book/Search?handler=Search&id=New" title="Truyện mới">Truyện mới</a></h2>
+        <h2><a href="/Book/Search?handler=Search&id=Full" title="Truyện full">Truyện full</a></h2>
+        <form method="get">
+            <select name="Cid" onchange="this.form.submit()" id="hot-select"
+                    class="form-control new-select" aria-label="Chọn thể loại">
+                <option value="0">Tất cả</option>
+                @foreach (var item in @Model.listCategory)
+                {
+                    <option value="@item.Cid">@item.Title</option>
+                }
+            </select>
+        </form>
+    </div>
+    <div class="index-intro">
+        @foreach (Story s in @Model.listStory)
+        {
+            <div class="item top-1" itemscope itemtype="">
+                <a href="/Book/Detail?id=@s.Sid" itemprop="url">
+                    <span class="@(s.Status == 1?"full-label":"")"></span>
+                    <img src="~/StoriesImage/@s.Image" alt="@s.Name" class="img-responsive item-img" itemprop="image">
+                    <div class="title">
+                        <h3 itemprop="name">@s.Name</h3>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="ad-banner">
+                    <a href="https://www.example.com" target="_blank">
+                        <img src="https://iads.staticscdn.net/ads/2022/05/24/images/wFiF08PRg6xyQrTflmgp4MqmZX9wvMGybosoM8na.png" alt="Advertisement Banner" class="img-fluid">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="container" id="list-index">
+    <div class="row text-center">
+        <div id="banner-bio-link"></div>
+    </div>
+    <div class="hide" id="history-holder"></div>
+    <div class="list list-truyen list-new col-xs-12 col-sm-12 col-md-8 col-truyen-main">
+        <div class="title-list">
+            <h2>
+                Truyện mới cập nhật chương mới
+            </h2>
+        </div>
+        @foreach (var c in @Model.listNewChapter)
+        {
+            <div class="row" itemscope )">
+                <div class="col-xs-9 col-sm-6 col-md-5 col-title">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    @*<span class="label-title label-new"></span>*@
+                    <h3 itemprop="name">
+                        <a href="/Book/Detail?id=@c.Key.Sid"
+                       title="@c.Key.Name" itemprop="url">
+                            @c.Key.Name
+                        </a>
+                    </h3>
+                    <span class="label-title label-new"></span>
+                </div>
+
+                <div class="hidden-xs col-sm-3 col-md-3 col-cat text-888">
+                    @foreach (var ct in @c.Value)
+                    {
+                        <a itemprop="genre"
+                   href="/Book/Search?handler=Search&id=@ct.Cid" title="">@ct.Title</a>
+                    }
+                </div>
+
+                <div class="col-xs-3 col-sm-3 col-md-2 col-chap text-info">
+                    <a href="/Book/Content?id=@c.Key.Sid&id1=@c.Key.Chapnumber"
+                   title="@c.Key.Name - Chương @c.Key.Chapnumber">
+                        <span class="chapter-text"><span>Chương </span></span>@c.Key.Chapnumber
+                    </a>
+                </div>
+                <div class="hidden-xs hidden-sm col-md-2 col-time text-888 timer">@c.Key.CreatedAt</div>
+            </div>
+        }
+    </div>
+    <div class="col-md-4 col-truyen-side">
+        @{
+            User u = null;
+            string json = HttpContext.Session.GetString("user");
+            if (json != null) u = JsonConvert.DeserializeObject<User>(json);
+        }
+        @if (u != null && Model.saveChapter.Count > 0)
+        {
+            <div class="list list-truyen list-history col-xs-12">
+                <div class="title-list">
+                    <h2><a href="/Story/ListSaved/@u.Uid">Chương đã lưu</a></h2>
+                </div>
+                @foreach (Chapter c in Model.saveChapter)
+                {
+                    <div class="row">
+                        <div class="col-md-5 col-lg-7">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                            <h3 itemprop="name">
+                                <a title="@c.Name" href="/Book/Detail?id=@c.Sid">@c.Name</a>
+                            </h3>
+                        </div>
+                        <div class="col-md-7 col-lg-5 text-info">
+                            <a title="@c.Name Chương @c.Chapnumber" href="/Book/Content?id=@c.Sid&id1=@c.Chapnumber">Đọc tiếp chương @c.Chapnumber</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        <div class="visible-md-block visible-lg-block text-center">
+            <div class="hide" id="history-holder-side"></div>
+            <div class="list list-truyen list-cat col-xs-12">
+                <div class="title-list">
+                    <h4>Thể loại truyện</h4>
+                </div>
+                <div class="row">
+                    @foreach (Category c in Model.listCategory)
+                    {
+                        <div class="col-xs-6">
+                            <a href="/Book/Search?handler=Search&id=@c.Cid"
+                           title="@c.Title">@c.Title</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="ad-banner">
+                <a href="https://www.example.com" target="_blank">
+                    <img src="https://iads.staticscdn.net/ads/2022/05/24/images/wFiF08PRg6xyQrTflmgp4MqmZX9wvMGybosoM8na.png" alt="Advertisement Banner" class="img-fluid">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="truyen-slide">
+    <div class="list list-thumbnail col-xs-12">
+        <div class="title-list">
+            <h2>
+                <a href="/Book/Search?handler=Search&id=Full" title="Truyện full">
+                    Truyện đã hoàn
+                    thành
+                </a>
+            </h2>
+            <span class="glyphicon glyphicon-menu-right"></span>
+        </div>
+        <div class="row">
+            @foreach (Story s in Model.listFullStory)
+            {
+                <div class="col-xs-4 col-sm-3 col-md-2">
+                    <a href="/Book/Detail?id=@s.Sid"
+                   title="@s.Name">
+                        <div class="caption">
+                            <img src="~/StoriesImage/@s.Image" />
+                            <h3>@s.Name</h3> <small class="btn-xs label-primary">
+                                Full -
+                                @s.Chapters.Count Chương
+                            </small>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    var selectElement = document.getElementById("hot-select");
+
+    // Lưu trữ giá trị khi thay đổi
+    selectElement.addEventListener("change", function () {
+        localStorage.setItem("selectedCid", this.value);
+    });
+
+    // Khôi phục giá trị khi tải trang
+    var savedCid = localStorage.getItem("selectedCid");
+    if (savedCid) {
+        selectElement.value = savedCid;
+    }
+</script>

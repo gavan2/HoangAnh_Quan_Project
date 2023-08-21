@@ -1,0 +1,70 @@
+﻿@page
+@model BookStory.Pages.Users.RegisterModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "_UserLayoutV2";
+}
+<div class="register-box">
+    <div class="register-logo">
+        <a href="/Index"><b>Book</b>Story</a>
+    </div>
+
+    <div class="card">
+        <div class="card-body register-card-body">
+            <p class="login-box-msg">Đăng ký</p>
+
+            <form method="post">
+                <div class="input-group mb-3">
+                    <input type="text" asp-for="@Model.User.Name" class=" form-control" placeholder="Họ tên của bạn" required>
+                    <span asp-validation-for="@Model.User.Name" class="text-danger"></span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-user"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="email" asp-for="@Model.User.Email" class="form-control" placeholder="Email">
+                    <span asp-validation-for="@Model.User.Email" class="text-danger"></span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-envelope"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" asp-for="@Model.User.Password" class="form-control" placeholder="Mật khẩu">
+                    <span asp-validation-for="@Model.User.Password" class="text-danger"></span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="password" asp-for="@Model.repass" class="form-control" placeholder="Nhập lại mật khẩu">
+                    <span asp-validation-for="@Model.repass" class="text-danger"></span>
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-lock"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <!-- /.col -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+                    </div>
+                    <!-- /.col -->
+                </div>
+            </form>
+
+            <div class="social-auth-links text-center">
+                <p>@Model.message</p>
+            </div>
+
+            <a href="/Users/Login/" class="text-center">Đăng nhập?</a>
+        </div>
+        <!-- /.form-box -->
+    </div><!-- /.card -->
+</div>

@@ -1,0 +1,66 @@
+﻿@page
+@model BookStory.Pages.Users.VerifyModel
+@{
+    ViewBag.Title = "Verify";
+    Layout = "_UserLayoutV2";
+    string json = HttpContext.Session.GetString("register-user");
+    int? code = HttpContext.Session.GetInt32("code");
+}
+
+<div class="login-box">
+    <div class="login-logo">
+        <a href="/Home/Index/"><b>Book</b>Story</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+        @if (json == null || code == null)
+        {
+            <div class="signin-form">
+                <h3 class="form-title text-center">Đăng ký thành công</h3>
+                <p class="col-12 text-center">
+                    <a href="/Users/Login/">Về trang đăng nhập</a>
+                </p>
+                <p class="col-12 text-center">
+                    <a href="/Users/Register/" class="text-center">Về trang đăng ký</a>
+                </p>
+            </div>
+
+        }
+        else
+        {
+            <div class="card-body login-card-body">
+                <p class="login-box-msg">Nhập mã xác minh</p>
+                <form method="post">
+                    <div class="input-group mb-3">
+                        <input type="text" name="code" class="form-control" placeholder="Mã xác minh" required>
+                        <div class="input-group-append">
+                            <div class="input-group-text">
+                                <span class="fas fa-envelope"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-block">Xác minh</button>
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                </form>
+
+                <div class="social-auth-links text-center mb-3">
+                    <p>@Model.message</p>
+                </div>
+                <!-- /.social-auth-links -->
+
+                <p class="mb-1">
+                    <a href="/Users/Login/">Về trang đăng nhập</a>
+                </p>
+                <p class="mb-0">
+                    <a href="/Users/Register/" class="text-center">Về trang đăng ký</a>
+                </p>
+            </div>
+        }
+        <!-- /.login-card-body -->
+    </div>
+</div>

@@ -1,0 +1,417 @@
+﻿﻿@using BookStory.Models
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@using System
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/style.css">
+    <link rel="stylesheet" href="~/style2.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+</head>
+
+<body id="body_chapter">
+    <div id="wrap">
+        <div class="navbar navbar-default navbar-static-top" role="navigation" id="nav">
+            <script type="text/javascript">function getCookie(d) { d += "="; for (var b = decodeURIComponent(document.cookie).split(";"), c = [], a = 0; a < b.length; a++)0 == b[a].trim().indexOf(d) && (c = b[a].trim().split("=")); return 0 < c.length ? c[1] : "" } var js_bgcolor = getCookie("bgcolor-cookie"); "#232323" == js_bgcolor && (document.getElementsByTagName("body")[0].className += " dark-theme");</script>
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target=".navbar-collapse">
+                        <span class="sr-only">Hiện menu</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+                    </button>
+                    <h1><a class="header-logo" href="/Index" title="doc truyen">doc truyen</a></h1>
+                </div>
+                <div class="navbar-collapse collapse" itemscope itemtype="">
+                    <ul class="control nav navbar-nav">
+                        @{
+                            User u = null;
+                            string json = Context.Session.GetString("user");
+                            if (json != null) u = JsonConvert.DeserializeObject<User>(json);
+                        }
+                        @if (u != null)
+                        {
+                            <li>
+                                <a href="/Book/Save?id=@u.Uid">Xin chào @u.Name</a>
+                            </li>
+                        }
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle"
+                               data-toggle="dropdown">
+                                <span class="glyphicon glyphicon-list"></span> Thể loại <span class="caret"></span>
+                            </a>
+                            <div class="dropdown-menu multi-column">
+                                <div class="row">
+                                        <div class="col-md-4">
+                                            <ul class="dropdown-menu">
+                                            @foreach (var item in @Model.listCategory)
+                                            {
+                                                <li>
+                                                    <a href="/Book/Search?handler=Search&id=@item.Cid"
+                                                   title="@item.Title">@item.Title</a>
+                                                </li>
+                                            }
+                                            </ul>
+                                        </div>
+                                </div>
+                            </div>
+                        </li>
+                        @if (Context.Request.Path.ToString().Contains("Content"))
+                        {
+                            <li class="dropdown">
+                                <a href="javascript:void(0)" class="dropdown-toggle"
+                               data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-cog"></span> Tùy chỉnh trang <span class="caret"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-right settings">
+                                    <form class="form-horizontal">
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label"
+                                               for="truyen-background">Màu nền</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <select class="form-control"
+                                                    id="truyen-background">
+                                                    <option value="#F4F4F4">Xám nhạt</option>
+                                                    <option value="#E9EBEE">Xanh nhạt</option>
+                                                    <option value="#F4F4E4">Vàng nhạt</option>
+                                                    <option value="#EAE4D3">Màu sepia</option>
+                                                    <option value="#D5D8DC">Xanh đậm</option>
+                                                    <option value="#FAFAC8">Vàng đậm</option>
+                                                    <option value="#EFEFAB">Vàng ố</option>
+                                                    <option value="#FFF">Màu trắng</option>
+                                                    <option value="hatsan">Hạt sạn</option>
+                                                    <option value="sachcu">Sách cũ</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label"
+                                               for="font-chu">Font chữ</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <select class="form-control" id="font-chu">
+                                                    <option value="'Palatino Linotype', serif">Palatino Linotype</option>
+                                                    <option value="Bookerly, serif">Bookerly</option>
+                                                    <option value="Minion, serif">Minion</option>
+                                                    <option value="'Segoe UI', sans-serif">Segoe UI</option>
+                                                    <option value="Roboto, sans-serif">Roboto</option>
+                                                    <option value="'Roboto Condensed', sans-serif">Roboto Condensed</option>
+                                                    <option value="'Patrick Hand', sans-serif">Patrick Hand</option>
+                                                    <option value="'Noticia Text', sans-serif">Noticia Text</option>
+                                                    <option value="'Times New Roman', serif">Times New Roman</option>
+                                                    <option value="Verdana, sans-serif">Verdana</option>
+                                                    <option value="Tahoma, sans-serif">Tahoma</option>
+                                                    <option value="Arial, sans-serif">Arial</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label"
+                                               for="size-chu">Size chữ</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <select class="form-control" id="size-chu">
+                                                    <option value="16px">16</option>
+                                                    <option value="18px">18</option>
+                                                    <option value="20px">20</option>
+                                                    <option value="22px">22</option>
+                                                    <option value="24px">24</option>
+                                                    <option value="26px">26</option>
+                                                    <option value="28px">28</option>
+                                                    <option value="30px">30</option>
+                                                    <option value="32px">32</option>
+                                                    <option value="34px">34</option>
+                                                    <option value="36px">36</option>
+                                                    <option value="38px">38</option>
+                                                    <option value="40px">40</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label"
+                                               for="line-height">Chiều cao dòng</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <select class="form-control" id="line-height">
+                                                    <option value="100%">100%</option>
+                                                    <option value="120%">120%</option>
+                                                    <option value="140%">140%</option>
+                                                    <option value="160%">160%</option>
+                                                    <option value="180%">180%</option>
+                                                    <option value="200%">200%</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label">Full khung</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <label class="radio-inline"
+                                                   for="fluid-yes">
+                                                    <input type="radio" name="fluid-switch" id="fluid-yes"
+                                                       value="yes"> Có
+                                                </label><label class="radio-inline"
+                                                           for="fluid-no">
+                                                    <input type="radio" name="fluid-switch" id="fluid-no"
+                                                       value="no" checked> Không
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="dropdown">
+                                <a href="javascript:void(0)" class="dropdown-toggle"
+                               data-toggle="dropdown">
+                                    <span class="glyphicon glyphicon-cog"></span> Tùy chỉnh trang <span class="caret"></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-right settings">
+                                    <form class="form-horizontal" id="form-function">
+                                        <div class="form-group form-group-sm">
+                                            <label class="col-sm-2 col-md-5 control-label"
+                                               for="truyen-background">Màu nền trang</label>
+                                            <div class="col-sm-5 col-md-7">
+                                                <select class="form-control"
+                                                    id="truyen-background">
+                                                    <option value="#F4F4F4" selected>Xám nhạt</option>
+                                                    <option value="#212121" selected>Màu tối</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                        <li class="dropdown">
+                            <a href="javascript:void(0)" class="dropdown-toggle"
+                               data-toggle="dropdown"><span class="glyphicon glyphicon-list"></span> Lựa chọn <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                @if (u == null)
+                                {
+                                    <li>
+                                        <a href="/Users/Login">
+                                            Đăng nhập
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/Users/Register">
+                                            Đăng ký
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/Users/ForgotPassword">
+                                            Quên mật khẩu
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    @if (u.Role == 1)
+                                    {
+                                        <li>
+                                            <a href="/Admin/ListStory/">
+                                                Quản lý truyện
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a href="/Book/Save?id=@u.Uid">
+                                            Truyện đã lưu
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/Users/ChangePassword/">
+                                            Đổi mật khẩu
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="/Users/Logout">
+                                            Đăng xuất
+                                        </a>
+                                    </li>
+
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="navbar-form navbar-right" role="search" itemprop="potentialAction" itemscope>
+                        <div class="input-group search-holder">
+                            <input aria-label="Từ khóa tìm kiếm" role="search key" class="form-control" id="search-input"
+                                   type="search" name="id" placeholder="Tìm kiếm..." value="">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit" onclick="search()"
+                                        aria-label="Tìm kiếm" role="search" style="height: 32px">
+                                    <span class="glyphicon glyphicon-search"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="list-group list-search-res hide"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="navbar-breadcrumb">
+                <div class="container breadcrumb-container">
+                    Đọc truyện online, đọc truyện chữ, truyện full, truyện hay.
+                    Tổng hợp đầy đủ và cập nhật liên tục.
+                </div>
+            </div>
+        </div>
+        @RenderBody();
+    </div>
+    <div id="footer" class="footer">
+        <div class="container">
+            <div class="hidden-xs col-sm-5">
+                <strong>Truyện Full</strong> - <a title="Đọc truyện online"
+                                                  href="#">Đọc truyện</a> online, <a title="Đọc truyện chữ"
+                                                                                     href="#">đọc truyện</a> chữ, <a title="Truyện hay"
+                                                                                                                     href="#">truyện hay</a>. Website luôn cập nhật những bộ <a title="Truyện mới"
+                                                                                                                                                                                href="#">truyện mới</a> thuộc các thể loại đặc sắc như <a title="Truyện tiên hiệp" href="#">truyện tiên hiệp</a>, <a title="Truyện kiếm hiệp" href="#">truyện kiếm hiệp</a>, hay
+                <a title="Truyện ngôn tình" href="#">truyện ngôn tình</a> một
+                cách nhanh nhất. Hỗ trợ mọi thiết bị như di động và máy tính bảng.
+            </div>
+            <ul class="col-xs-12 col-sm-7 list-unstyled">
+                <li class="text-right pull-right">
+                    <a class="backtop"
+                       title="Trở lên đầu trang" href="#wrap" rel="nofollow" aria-label="Trở về đầu trang">
+                        <span class="glyphicon glyphicon-upload"></span>
+                    </a>
+                </li>
+                <li class="hidden-xs tag-list">
+                    <a href="#"
+                       title="truyện tiên hiệp hay">truyện tiên hiệp hay</a> <a href="#" title="truyện hệ thống">truyện hệ thống</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <script src="~/main2.js"></script>
+    <script src="~/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+
+           var a = document.getElementsByClassName("timer");
+           for(let i = 0; i < a.length; i++){
+               timeDifference(a[i].textContent, i);
+           }
+
+           function timeDifference(previous, i) {
+            const date = new Date();
+            var current = date.getTime();
+            var oTime = previous;
+            var oldTime = new Date(oTime);
+            var msPerMinute = 60 * 1000;
+            var msPerHour = msPerMinute * 60;
+            var msPerDay = msPerHour * 24;
+            var msPerMonth = msPerDay * 30;
+            var msPerYear = msPerDay * 365;
+            var elapsed = current - oldTime;
+            var output = '';
+            if (elapsed < msPerMinute) {
+                 output = Math.round(elapsed/1000) + ' giây trước';
+            }
+
+            else if (elapsed < msPerHour) {
+                 output = Math.round(elapsed/msPerMinute) + ' phút trước';
+            }
+
+            else if (elapsed < msPerDay ) {
+                 output = Math.round(elapsed/msPerHour ) + ' giờ trước';
+            }
+
+            else if (elapsed < msPerMonth) {
+                output = Math.round(elapsed/msPerDay) + ' ngày trước';
+            }
+
+            else if (elapsed < msPerYear) {
+                output = Math.round(elapsed/msPerMonth) + ' tháng trước';
+            }
+
+            else {
+                output = Math.round(elapsed/msPerYear ) + ' năm trước';
+            }
+
+            document.getElementsByClassName("timer")[i].innerHTML = output;
+           }
+        function rated(rating){
+            for(var i = 1; i <= rating; i++){
+                $("#img" + i).attr('src', '//static.8cache.com/lib/raty/images/star-on.png');
+            }
+
+            for(var i = rating + 1; i <= 10; i++){
+                $("#img" + i).attr('src', '//static.8cache.com/lib/raty/images/star-off.png');
+            }
+            document.getElementById('rating-star').value = rating;
+            Rating();
+
+        }
+      
+
+        //login
+        function redirectToLogin(){
+            window.location.href = "/Users/Login/";
+        }
+
+        function search(){
+           var id =  $('#search-input').val();
+           if(id==null || id == ""){
+               id="searchfull";
+           }
+           window.location.href = '/Book/Search?handler=Search&id='+id;
+        }
+
+       
+        //Save chapter
+        function savechapter(){
+             var sid = $('#sid').val();
+             var chapnumber = $('#chapnumber').val();
+                    $.ajax({
+                        url: '/Book/Save?handler=Save',
+                        type: 'GET',
+                        data: {
+                            id : sid,
+                            id1 : chapnumber
+                        },
+                        success: function() {
+                            Swal.fire(
+                              'Thành công',
+                              'Đã lưu chương',
+                              'success'
+                            ).then(() =>{
+                                location.reload()
+                            })
+                        }
+                    });
+        }
+
+        //UnSave chapter
+        function unsavechapter(){
+             var sid = $('#sid').val();
+             var chapnumber = $('#chapnumber').val();
+                    $.ajax({
+                        url: '/Book/Save?handler=UnSave',
+                        type: 'GET',
+                        data: {
+                            id : sid,
+                            id1 : chapnumber
+                        },
+                        success: function() {
+                            Swal.fire(
+                              'Thành công',
+                              'Đã bỏ lưu chương',
+                              'success'
+                            ).then(() =>{
+                                location.reload()
+                            })
+                        }
+                    });
+        }
+
+        
+    </script>
+</body>
+
+</html>

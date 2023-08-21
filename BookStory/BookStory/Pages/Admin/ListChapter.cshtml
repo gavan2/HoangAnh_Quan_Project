@@ -1,0 +1,155 @@
+﻿@page
+@using BookStory.Models
+@model BookStory.Pages.Admin.ListChapterModel
+@{
+    ViewBag.Title = "List Chapter";
+    Layout = "_AdminLayout";
+}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>@Model.TotalStory</h3>
+
+                            <p>Bộ truyện</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>@Model.TotalView</h3>
+
+                            <p>Lượt đọc</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>@Model.TotalUser</h3>
+
+                            <p>Tài khoản</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Danh sách chương @Model.message</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên truyện</th>
+                                        <th>Tên chương</th>
+                                        <th>Ngày đăng</th>
+                                        <th>Ngày cập nhật</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (Chapter c in Model.listChapter)
+                                    {
+                                        <tr>
+                                            <td>@c.Ctid</td>
+                                            <td>@c.Name</td>
+                                            <td>@c.Subname</td>
+                                            <td>@c.CreatedAt</td>
+                                            <td>@c.UpdatedAt</td>
+                                            <td>
+                                                <button title="Sửa" data-id="@c.Ctid" class="btn chapterinfo1">
+                                                    <i class="far fa-edit"></i>
+                                                </button>
+                                                <button type="button" data-toggle="modal" title="Xóa truyện" class="btn deletechapter" data-id="@c.Ctid">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Control sidebar content goes here -->
+            </aside>
+            <!-- /.control-sidebar -->
+        </div>
+    </section>
+</div>
+@*Modal edit chapter*@
+<div class="modal fade" id="modal-edit-chapter">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sửa chương</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form  method="post" id="form-edit-chapter">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tên truyện</label>
+                                <input type="hidden" id="chapterid" name="ctid" value="">
+                                <input id="namechapter1" type="text" name="chaptername" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tập</label>
+                                <input id="chapternumber1" type="text" name="chapternumber" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tên chương</label>
+                                <input id="subnamechapter1" type="text" name="chaptersubname" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription">Nội dung</label>
+                            <textarea name="chaptercontent" id="chaptercontent1" class="form-control" required></textarea>
+                        </div>
+                        @* <button class="btn btn-success" id="edit-chapter">Lưu</button>*@
+                        <button asp-page-handler="EditChapter" type="submit" class="btn btn-success">Lưu</button>
+                    </div>
+                    <!-- /.card-body -->
+                    <!-- /.card -->
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

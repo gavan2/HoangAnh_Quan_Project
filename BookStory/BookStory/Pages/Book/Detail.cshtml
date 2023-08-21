@@ -1,0 +1,20 @@
+﻿@page
+@model BookStory.Pages.Book.DetailModel
+@{
+}
+@using BookStory.Models;
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Detail";
+    Layout = "_StoryLayout";
+}
+@{
+    User u1 = null;
+    string json = HttpContext.Session.GetString("user");
+    if (json != null) u1 = JsonConvert.DeserializeObject<User>(json);
+}
+
+<div id="truyen">
+    @await Html.PartialAsync("_TruyenPartial")
+</div>

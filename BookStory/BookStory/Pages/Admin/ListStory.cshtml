@@ -1,0 +1,476 @@
+﻿@page
+@model BookStory.Pages.Admin.ListStoryModel
+@{
+}
+@using BookStory.Models
+@{
+    ViewBag.Title = "List Story";
+    Layout = "_AdminLayout";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            <h3>@Model.TotalStory</h3>
+
+                            <p>Bộ truyện</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-bag"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-success">
+                        <div class="inner">
+                            <h3>@Model.TotalView</h3>
+
+                            <p>Lượt đọc</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-stats-bars"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-4 col-4">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            <h3>@Model.TotalUser</h3>
+
+                            <p>Tài khoản</p>
+                        </div>
+                        <div class="icon">
+                            <i class="ion ion-person-add"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Main row -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                Danh sách các truyện
+                                <button id="addstory-btn" type="button" data-toggle="modal" data-target="#modal-story" class="btn btn-success">Thêm truyện mới</button>
+                                <button id="addauthor-btn" type="button" data-toggle="modal" data-target="#modal-author" class="btn btn-success">Thêm tác giả mới</button>
+                                <button id="addcategory-btn" type="button" data-toggle="modal" data-target="#modal-category" class="btn btn-success">Thêm danh mục mới</button>
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body" id="refresh-table">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tên truyện</th>
+                                        <th>Lượt đọc</th>
+                                        <th>Số tập</th>
+                                        <th>Trạng thái</th>
+                                        <th>Ngày đăng</th>
+                                        <th>Ngày cập nhật</th>
+                                        <th>Hành động</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (Story s in Model.listStory)
+                                    {
+                                        <tr>
+                                            <td>@s.Sid</td>
+                                            <td>@s.Name</td>
+                                            <td>@s.View</td>
+                                            <td>@s.Chapters.Count</td>
+                                            @if (@s.Status == 1)
+                                            {
+                                                <td>Hoàn thành</td>
+                                            }
+                                            else
+                                            {
+                                                <td>Chưa hoàn thành</td>
+                                            }
+                                            <td>@s.CreatedAt</td>
+                                            <td>@s.UpdatedAt</td>
+                                            <td>
+                                                <button title="Sửa" data-id="@s.Sid" class="btn storyinfo">
+                                                    <i class="far fa-edit"></i>
+                                                </button>
+                                                <button title="Thêm chương mới" data-id="@s.Sid" class="btn chapterinfo">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                                <button type="button" data-toggle="modal" title="Xóa truyện" class="btn deletestory" data-id="@s.Sid">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Control sidebar content goes here -->
+            </aside>
+            <!-- /.control-sidebar -->
+        </div>
+    </section>
+</div>
+
+@*Modal Story*@
+<div class="modal fade" id="modal-story">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm truyện</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="AddStory" method="post" id="form-add-story" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label for="inputName">Tên truyện</label>
+                                <input type="text" name="name" id="inputName" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Danh mục</label>
+                                <select name="categories" class="form-control select2" multiple="multiple" required>
+                                    @foreach (Category c in Model.listCategory)
+                                    {
+                                        <option value="@c.Cid">@c.Title</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Tác giả</label>
+                                <select name="author" class="select2 form-control" required>
+                                    <option selected>Chọn tác giả</option>
+                                    @foreach (Author a in Model.listAuthor)
+                                    {
+                                        <option value="@a.Aid">@a.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Trạng thái</label>
+                                <select id="inputStatus" name="status" class="form-control custom-select" required>
+                                    <option value="1">Hoàn thành</option>
+                                    <option value="0">Chưa hoàn thành</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Link ảnh</label>
+                                <input type="file" name="image" id="inputName" class="form-control-file" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Nguồn</label>
+                                <input type="text" name="source" id="inputName" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Từ khóa</label>
+                                <input type="text" name="keyword" id="inputName" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription">Mô tả ngắn</label>
+                            <textarea id="inputDescription" name="description" class="form-control summernote" rows="8"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Tạo</button>
+                        @*<button type="button" class="btn btn-success" id="add-story">Tạo</button>*@
+                    </div>
+                    <!-- /.card-body -->
+                    <!-- /.card -->
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Author*@
+<div class="modal fade" id="modal-author">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm tác giả </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="AddAuthor" method="post" id="form-add-author">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="inputEstimatedBudget">Tên tác giả</label>
+                            <input type="text" name="author" id="inputEstimatedBudget" class="form-control" required>
+                        </div>
+                        @*<input type="submit" value="Tạo" class="btn btn-success">*@
+                        <button type="button" class="btn btn-success" id="add-author">Tạo</button>
+                        <button id="edit-author-btn" type="button" data-toggle="modal" data-target="#modal-edit-author" class="btn btn-success">Sửa tên tác giả</button>
+                    </div>
+                    <!-- /.card-body -->
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Edit Author*@
+<div class="modal fade" id="modal-edit-author">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sửa thông tin tác giả</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="EditAuthor" id="form-edit-author">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <select id="authorSelect" class="form-control select2">
+                                <option value="0">Chọn tác giả</option>
+                                @foreach (Author item in Model.listAuthor)
+                                {
+                                    <option value="@item.Aid">@item.Name</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEstimatedBudget">Tên tác giả</label>
+                            <input type="hidden" id="edit-author-id" class="form-control">
+                            <input type="text" id="edit-author-name" class="form-control" required>
+                        </div>
+                        @*<input type="submit" value="Tạo" class="btn btn-success">*@
+                        <button type="button" class="btn btn-success" id="edit-author">Sửa</button>
+                    </div>
+                    <!-- /.card-body -->
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Category*@
+<div class="modal fade" id="modal-category">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm danh mục</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="AddCategory" method="post" id="form-add-category">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="inputEstimatedBudget">Tên danh mục</label>
+                            <input type="text" name="category" id="inputEstimatedBudget" class="form-control" required>
+                        </div>
+                        @*<input type="submit" value="Tạo" class="btn btn-success">*@
+                        <button type="button" class="btn btn-success" id="add-category">Tạo</button>
+                        <button id="edit-category-btn" type="button" data-toggle="modal" data-target="#modal-edit-category" class="btn btn-success">Sửa danh mục</button>
+                    </div>
+                    <!-- /.card-body -->
+
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Edit Category*@
+<div class="modal fade" id="modal-edit-category">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Sửa thông tin danh mục</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="EditCategory" method="post" id="form-edit-category">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <select id="categorySelect" class="form-control select2">
+                                <option value="0">Chọn danh mục</option>
+                                @foreach (Category item in Model.listCategory)
+                                {
+                                    <option value="@item.Cid">@item.Title</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEstimatedBudget">Danh mục</label>
+                            <input type="hidden" id="edit-category-id" class="form-control">
+                            <input type="text" id="edit-category-name" class="form-control" required>
+                        </div>
+                        @*<input type="submit" value="Tạo" class="btn btn-success">*@
+                        <button type="button" class="btn btn-success" id="edit-category">Sửa</button>
+                    </div>
+                    <!-- /.card-body -->
+                </form>
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Edit Story*@
+<div class="modal fade" id="modal-edit">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Chỉnh sửa truyện</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="EditStory" method="post" id="form-edit-story" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label for="inputName">Tên truyện</label>
+                            <input type="hidden" id="sid-edit" name="sid" value="">
+                            <input id="name-edit" type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Danh mục</label>
+                                <select name="categories" id="category-edit" class="form-control select2" multiple="multiple" required>
+                                    @foreach (Category c in Model.listCategory)
+                                    {
+                                        <option value="@c.Cid">@c.Title</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Tác giả</label>
+                                <select id="author-edit" name="author" class="select2 custom-select form-control" required>
+                                    <option selected>Chọn tác giả</option>
+                                    @foreach (Author a in Model.listAuthor)
+                                    {
+                                        <option value="@a.Aid">@a.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputStatus">Trạng thái</label>
+                                <select id="status-edit" name="status" class="form-control custom-select" required>
+                                    <option value="1">Hoàn thành</option>
+                                    <option value="0">Chưa hoàn thành</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Nguồn</label>
+                                <input type="text" name="source" id="source-edit" class="form-control" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Link ảnh</label>
+                                <input type="file" name="image" id="image-edit" class="form-control-file" required>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Từ khóa</label>
+                                <input type="text" name="keyword" id="keyword-edit" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription">Mô tả ngắn</label>
+                            <textarea name="description" id="description-edit" class="form-control">
+                            <p id="content1"></p>
+                            </textarea>
+                        </div>
+                        <input type="submit" value="Lưu" class="btn btn-success">
+                        @*<button type="button" class="btn btn-success" id="edit-story">Lưu</button>*@
+                    </div>
+                    <!-- /.card-body -->
+                    <!-- /.card -->
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@*Modal Add Chapter*@
+<div class="modal fade" id="modal-addchapter">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Thêm chương mới</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-page-handler="AddChapter" method="post" id="form-add-chapter">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tên truyện</label>
+                                <input type="hidden" id="sid-chapter" name="sid" value="">
+                                <input id="namechapter" type="text" name="chaptername" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tập</label>
+                                <input id="chapternumber" type="text" name="chapternumber" class="form-control" readonly>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label for="inputName">Tên chương</label>
+                                <input id="subnamechapter" type="text" name="chaptersubname" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDescription">Nội dung</label>
+                            <textarea name="chaptercontent" id="chaptercontent" class="form-control summernote" rows="" required></textarea>
+                        </div>
+                        <input type="submit" value="Lưu" class="btn btn-success">
+                        @*<button class="btn btn-success" id="add-chapter">Tạo</button>*@
+                    </div>
+                    <!-- /.card-body -->
+                    <!-- /.card -->
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+

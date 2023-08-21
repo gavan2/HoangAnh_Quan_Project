@@ -1,0 +1,137 @@
+﻿@page
+@model BookStory.Pages.Book.ContentModel
+@using BookStory.Models
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "Content";
+    Layout = "_StoryLayout";
+}
+@{
+    User u1 = null;
+    string json = HttpContext.Session.GetString("user");
+    if (json != null) u1 = JsonConvert.DeserializeObject<User>(json);
+}
+<div id="chapter-big-container" class="container chapter">
+    <div class="row">
+        <div class="col-xs-12">
+            <button type="button"
+                    class="btn btn-responsive btn-success toggle-nav-open">
+                <span class="glyphicon glyphicon-menu-updownswitch"></span>
+            </button>
+            <a class="truyen-title"
+               href="/Book/Detail?id=@Model.Chapter.Sid" title="@Model.Chapter.Name">@Model.Chapter.Name</a>
+            <h2>
+                <a class="chapter-title" href="/Book/Content?id=@Model.Chapter.Sid&id1=@Model.Chapter.Chapnumber"
+                   title="@Model.Chapter.Subname">
+                    <span class="chapter-text"><span>@Model.Chapter.Subname</span></span>
+                </a>
+            </h2>
+            <hr class="chapter-start">
+            @if (HttpContext.Session.GetString("user") != null)
+            {
+                if (Model.IsSave == false)
+                {
+                    <input type="hidden" value="@Model.Chapter.Sid" name="id" id="sid">
+                    <input type="hidden" value="@Model.Chapter.Chapnumber" name="id1" id="chapnumber">
+                    <button onclick="savechapter()" class="btn btn-success">Lưu chương</button>
+                }
+                else
+                {
+                    <input type="hidden" value="@Model.Chapter.Sid" name="id" id="sid">
+                    <input type="hidden" value="@Model.Chapter.Chapnumber" name="id1" id="chapnumber">
+                    <button onclick="unsavechapter()" class="btn btn-success">Bỏ lưu chương</button>
+                }
+            }
+            else
+            {
+                <a href="/Users/Login/"><button class="btn btn-success">Lưu chương</button></a>
+            }
+            <div style="margin-top: 30px" class="chapter-nav" id="chapter-nav-top">
+                <input type="hidden" id="ten-truyen" value="co-vo-que-mua-tong-tai-tham-sau">
+                <div class="btn-group">
+                    <a class="btn btn-success btn-chapter-nav @(Model.Chapter.Chapnumber.Equals("1")?"disabled":"")"
+                       href="/Book/Content?id=@Model.Chapter.Sid&id1=@(int.Parse(Model.Chapter.Chapnumber) - 1)" id="prev_chap" data-cid="">
+                        <span class="glyphicon glyphicon-chevron-left"></span> <span class="hidden-xs">
+                            Chương
+                        </span>trước
+                    </a>
+                    <select class="btn btn-success btn-chapter-nav" onchange="window.location.href=this.value">
+                        <option value="#">Chọn chương</option>
+                        @foreach (Chapter c in Model.AllChapters)
+                        {
+                            <option value="/Book/Content?id=@c.Sid&id1=@c.Chapnumber">Chương @c.Chapnumber</option>
+                        }
+                    </select>
+                    <a class="btn btn-success btn-chapter-nav @(Model.Chapter.Chapnumber.Equals(Model.AllChapters.Count.ToString())?"disabled":"")"
+                       href="/Book/Content?id=@Model.Chapter.Sid&id1=@(int.Parse(Model.Chapter.Chapnumber) + 1)"
+                       id="next_chap" data-cid="2834632">
+                        <span class="hidden-xs">Chương </span>tiếp <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div><br />
+            <hr class="chapter-end">
+            <div id="chapter-c" class="chapter-c">
+                @Html.Raw(Model.Chapter.Content)
+            </div>
+            <hr class="chapter-end">
+            @if (HttpContext.Session.GetString("user") != null)
+            {
+                if (Model.IsSave == false)
+                {
+                    <input type="hidden" value="@Model.Chapter.Sid" name="id" id="sid">
+                    <input type="hidden" value="@Model.Chapter.Chapnumber" name="id1" id="chapnumber">
+                    <button onclick="savechapter()" class="btn btn-success">Lưu chương</button>
+                }
+                else
+                {
+                    <input type="hidden" value="@Model.Chapter.Sid" name="id" id="sid">
+                    <input type="hidden" value="@Model.Chapter.Chapnumber" name="id1" id="chapnumber">
+                    <button onclick="unsavechapter()" class="btn btn-success">Bỏ lưu chương</button>
+                }
+            }
+            else
+            {
+                <a href="/Users/Login/"><button class="btn btn-success">Lưu chương</button></a>
+            }
+            <div style="margin-top: 30px" class="chapter-nav" id="chapter-nav-bot">
+                <div class="btn-group">
+                    <a class="btn btn-success btn-chapter-nav @(Model.Chapter.Chapnumber.Equals("1")?"disabled":"")"
+                       href="/Book/Content?id=@Model.Chapter.Sid&id1=@(int.Parse(Model.Chapter.Chapnumber) - 1)">
+                        <span class="glyphicon glyphicon-chevron-left"></span> <span class="hidden-xs">
+                            Chương
+                        </span>trước
+                    </a>
+                    <select class="btn btn-success btn-chapter-nav" onchange="window.location.href=this.value">
+                        <option value="#">Chọn chương</option>
+                        @foreach (Chapter c in Model.AllChapters)
+                        {
+                            <option value="/Book/Content?id=@c.Sid&id1=@c.Chapnumber">Chương @c.Chapnumber</option>
+                        }
+                    </select>
+                    <a class="btn btn-success btn-chapter-nav @(Model.Chapter.Chapnumber.Equals(Model.AllChapters.Count.ToString())?"disabled":"")"
+                       href="/Book/Content?id=@Model.Chapter.Sid&id1=@(int.Parse(Model.Chapter.Chapnumber) + 1)">
+                        <span class="hidden-xs">Chương </span>tiếp <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/signalRServer")
+        .build();
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    function saveChapter() {
+        // Gửi thông điệp SignalR tới máy chủ
+        connection.invoke("SaveChapter").catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+</script>

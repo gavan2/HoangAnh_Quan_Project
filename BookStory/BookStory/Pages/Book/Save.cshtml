@@ -1,0 +1,49 @@
+﻿@page
+@model BookStory.Pages.Book.SaveModel
+@{
+}
+
+@using BookStory.Models
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "List Saved";
+    Layout = "_StoryLayout";
+}
+<div class="container" id="list-page">
+    <div class="col-xs-12 col-sm-12 col-md-9 col-truyen-main">
+        <div class="text-center"></div>
+        <div class="list list-truyen col-xs-12">
+            <div class="title-list">
+                <h2>Các chương đã lưu</h2>
+            </div>
+            @if (Model.listChapter.Count > 0)
+            {
+                @foreach (Chapter c in Model.listChapter)
+                {
+                    <div class="row" itemscope>
+                        <div class="col-xs-12">
+                            <div>
+                                <input type="hidden" value="@c.Sid" name="id" id="sid">
+                                <input type="hidden" value="@c.Chapnumber" name="id1" id="chapnumber">
+                                <button onclick="unsavechapter()" class="btn btn-danger">Bỏ lưu</button>
+                                <h3 class="truyen-title" itemprop="name">
+                                    <a href="/Book/Content?id=@c.Sid&id1=@c.Chapnumber"
+                               title="@c.Name" itemprop="url">
+                                        @c.Name - Chương @c.Chapnumber
+                                    </a>
+                                </h3>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="truyen-title">Trống</div>
+            }
+        </div>
+    </div>
+</div>
